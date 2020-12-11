@@ -10,7 +10,7 @@
 		<h1>Progressive Color Transfer</h1>
 		<br>
 		<h4>by Tianyuan Zheng, Tianshu Shen</h4>
-		<h4><a href='https://github.com/littlebug2018/cs639project_progressive_color_transfer'>Github Page</a></h4>
+		<h4><a href='https://github.com/stellajc/cs639project_progressive_color_transfer'>Github Page</a></h4>
 	</div>
 </header>
 <section class="main">
@@ -64,7 +64,7 @@
 			<p>We used the pre-trained vgg19 provided by Matlab to obtain the feature maps. Then for each position in one normalized feature map, we slide over all possible patches on the other normalized feature map and find the one with the smallest squared norm difference. </p>
 			<p><b>Challenge1:</b> One challenge here is, for large feature maps, it takes lots of time to test through all possible matches, especially when the feature maps are in 3D tensor format. We then reduced our input size to the minimum scale for vgg19 and do NNF computation on it.</p>
 			<p><b>Challenge2:</b> Another problem we met is implementing the BDS voting on the two feature maps. The description in the paper by He et al. simply referred to the algorithm without explicitly giving the implementation details. However, the BDS voting algorithm in its original paper is utilized to summarize information of photos and thus achieves the convergence of BDS voting by reducing the size of the target image gradually. To transfer the BDS voting algorithm into our progressive style transfer algorithm, we may need more exploration of the two algorithms. Unfortunately, we didn't make it for this project. Thus, we eliminate this step in our testing. This may lead to a bad correspondence and guidance image lacking improvement for completeness and coherence. The incomplete implementation for BDS voting can be found on our Github page.</p>
-			<p>Given the one directional correspondence, we then create the guidance image based on the reference image color correspondingly at each pixel. We feed this G into vgg19 and extract reluL_1 for the feature maps of G, which will be utilized as one parameter for the Local Color Transfer part.</p>
+			<p>Given the one-directional correspondence, we then create the guidance image based on the reference image color correspondingly at each pixel. We feed this G into vgg19 and extract reluL_1 for the feature maps of G, which will be utilized as one parameter for the Local Color Transfer part.</p>
 			<li>Local Color Transfer</li>
 			<p><b>Challenge3:</b>The solution to the objective function to optimize the transfer matrix is not close formed. An alternative is to start with an initial guess and then performs conjugate gradient iterations. However, due to the high dimensionality of the target matrix(4D) and lack of support from Matlab to compute high dimensional matrix and model conjugate gradient, it is too challenging for us to stick to the method in the paper. (The implementation by He et al is a C++ combined with CUDA implementation.)</p>
 			<p>To generate results within a desirable time, we modify the implementation of local color transfer by waiving the global color constraint which brings in the majority of the computational workloads and computing the coefficients inspired by method of expectations. We use local means and SD’s of both S and G to measure the expected coefficients of the transfer. The effect of this modification is not as good as the one in the original method, but we can get a sense of what this difference results from for improvements or better modification.</p>
