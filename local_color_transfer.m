@@ -13,13 +13,13 @@ gl = rgb2lab(g_img);
 Tl = zeros(H, W, 3, 2); % 3 = # channels; 2 = # coef at a pixel
 %patch_states = zeros(H,W,3,4); % 4=#stats to compute coef a, b
 e = 0.0002; %color range [0,1]
-e1 = 1.1;
+e1 = 1.3;
 for c = 1:3
     for i = 1:H
         for j = 1:W
             [m_s, sd_s, m_g, sd_g] = compute_patch_stats(i,j,sl(:,:,c),gl(:,:,c),H,W);
-            al = sd_g/(sd_s + e);
-            bl =  m_g - al*m_s*e1;
+            al = e1*sd_g/(sd_s + e);
+            bl =  m_g - al*m_s;
             Tl(i,j,c,1) = al;
             Tl(i,j,c,2) = bl;
         end
