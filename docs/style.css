@@ -110,6 +110,7 @@ section {
     height: 300px;
     position: relative;
     left: 13%;
+    background-size: cover;
 }
 
 .combine-result-list li {
