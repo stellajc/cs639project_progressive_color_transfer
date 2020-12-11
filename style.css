@@ -1,0 +1,140 @@
+/** General */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,body {
+    background-color: #fff;
+    color: #34495e;
+    font-family: 'Lato', 'Arial', sans-serif;
+    font-weight: 300;
+    font-size:20px;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+}
+
+.clearfix {
+    zoom:1
+}
+
+.clearfix {
+    content: '.';
+    display: block;
+    clear: both;
+}
+
+/** picture center general*/
+.center {
+    display: block;
+    margin: 15px auto;
+    width: 40%;
+}
+
+/** Headings
+*/
+
+header {
+    background-color: gray;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top;
+    height: 40vh;
+    padding: 1px;
+    margin: 0;
+}
+
+h1 {
+    color: white;
+    font-size: 300%;
+    margin-top: 15vh;
+}
+
+
+#title {
+    color: #404040;
+    text-align: center;
+    height: 50vh;
+
+}
+
+
+h2 {
+    margin-top: 50px;
+    margin-left: 100px
+}
+
+h3 {
+    font-size: 123%;
+    margin-left: 100px
+}
+
+
+
+/** Body */
+a {
+    /*text-decoration: none;*/
+    color: #34495e;
+}
+
+section {
+    overflow: auto;
+    padding: 1px;
+}
+.main p {
+    line-height: 1.7;
+    margin: 20px 130px;
+    padding: 20px;
+}
+
+.approach-list li {
+    padding-left: 180px;
+    padding-bottom: 20px;
+}
+
+.implementation-list li, 
+.result li {
+    margin-left: 8rem;
+    padding-left: 3px;
+    padding-top: 30px;
+    list-style-type: square;
+}
+
+.container img {
+    display: inline-block;
+    white-space: nowrap;
+    overflow-x: auto;
+    margin: 50px auto;
+    padding-left: 30px;
+    height: 300px;
+    position: relative;
+    left: 13%;
+}
+
+.combine-result-list li {
+    margin-left: 11rem;
+    padding-left: 3px;
+    padding-top: 30px;
+    list-style-type: circle;
+}
+.footer {
+    position: relative;
+    left: 0;
+    bottom: 0;
+    height: 100px;
+    width: 100%;
+    background-color:darkgrey ;
+    color: white;
+}
+
+.caption {
+    text-align: center;
+    font-size: 80%;
+}
+
+.reference-list li {
+    font-size: 85%;
+    margin-left: 150px;
+    padding-top: 15px;
+}
