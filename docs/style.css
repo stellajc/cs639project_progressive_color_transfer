@@ -112,6 +112,9 @@ section {
     left: 13%;
     background-size: cover;
 }
+.three img{
+    width: 800px;
+}
 
 .combine-result-list li {
     margin-left: 11rem;
