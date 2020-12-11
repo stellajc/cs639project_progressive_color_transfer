@@ -6,8 +6,8 @@ function [modified_src] =  local_color_transfer(g_img, level, src_img, matching_
 
 [H, W, d] = size(g_img);
 [h,w, d1] = size(src_img);
-sl = rgb2lab(imresize(src_img,[H, W]));
-gl = rgb2lab(g_img);
+sl = im2double(imresize(src_img,[H, W]));
+gl = im2double(g_img);
 
 % initialization of Tl
 Tl = zeros(H, W, 3, 2); % 3 = # channels; 2 = # coef at a pixel
