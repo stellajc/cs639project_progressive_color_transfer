@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+	<link rel = "stylesheet" type = "text/css" href="style.css">
+	<title>CS639-Progressive Color Transfer</title>
+</head>
+<body>
+<header>d
+	<div id = "title">
+		<h1>Progressive Color Transfer</h1>
+		<br>
+		<h4>by Tianyuan Zheng, Tianshu Shen</h4>
+		<h4><a href='https://github.com/littlebug2018/cs639project_progressive_color_transfer'>Github Page</a></h4>
+	</div>
+</header>
+<section class="main">
+	<div id = "Background">
+		<h2>Background</h2>
+		<p>Color transfer is a profoundly explored topic in the computer vision field. It alters the colors in a content image corresponding to the color style in some reference images. Using color transfer, we are able to change the time setting of images, such as from day to night and from summer to winter, as it mimics different illumination and scene materials.</p>
+		<p>There are various methods to realize color transfer, including global color transfer methods, local color transfer methods, and learning-based algorithms. Here is one example we made using <a href='https://ieeexplore.ieee.org/document/946629'>global statistical analysis</a> to transfer the color style of source images: </p>
+		<img src="results/example.png" alt = "color transfer example" class = "center">
+		<figcaption class = "caption">Left: source image, Middle: reference image, Right: output image</figcaption>
+		<p>This example transforms the color of the source image in a spatially invariant method, which means it cannot achieve a precise correspondence between the two inputs considering the content structures.</p>
+		<p>Out of this consideration, we find the algorithm <a href ='https://arxiv.org/abs/1710.00756#:~:text=Title%3AProgressive%20Color%20Transfer%20with%20Dense%20Semantic%20Correspondences.%20Progressive,transfer%20that%20leverages%20semantically-meaningful%20dense%20correspondence%20between%20images.'>progressive color transfer with dense semantic correspondences</a>, which is published by He, M. et al. in 2017, a decent option to implement color transfer based on semantic similarities. Based on this algorithm, we implemented our simplified version of it using Matlab. One example result using this method is shown as below:</p>
+		<img src="results/example2.png" alt = "color transfer example2" class = "center">
+		<figcaption class = "caption">Left: source image, Middle: reference image, Right: output image</figcaption>
+	</div>
+
+	<div id = "Algorithm">
+		<h2>Algorithm</h2>
+		<p> The original algorithm introduced in the paper takes images with similar semantics as inputs. We will introduce the algorithm for the paper in the following three parts:</p>
+		<ul class = "approach-list">
+			<li>1. The major pipeline.</li>
+			<li>2. Nearest-neighbor field computation.</li>
+			<li>3. Local color transfer.</li>
+		</ul>
+		<br>
+		<ul class = "implementation-list">
+			<li>Major Pipeline</li>
+			<p>This algorithm consists of five loops from coarse to detailed color correspondences. The loop number L is labeled from 5 to 1. In each loop, the algorithm takes the reference image R and an intermediate image S^L+1 (L<5) from the previous loop. For the initial input, the intermediate image S will be replaced by the source image. The two images will be processed in the Nearest-Neighbor Field Computation part which outputs a guidance image G together with a feature layer for G. The algorithm will then do Local Color Transfer given the guidance image and the reference image and produce an intermediate output S^L which will feed into the next loop.</p>
+			<img src="results/pipeline.png" alt = "pipeline display" class = "center">
+			<figcaption class = "caption">Pipeline of Progressive Color Transfer</figcaption>
+			<li>Nearest-Neighbor Field Computation</li>
+			<p>In this part, the algorithm try to find correspondence between the two inputs using their sementic structures. </p>
+			<p>First, the reference image R and an intermediate image S^L+1 are put into vgg19 (a convolutional neural network). This step gives us the source feature FS and the reference feature FR on reluL_1 layer. From loop L = 5 to 1, the size of the feature map decreases and reflects features from the high level structure to local details. The algorithm uses the normalized feature maps to find the best correspondence for both from FS to FR and FR to FS, depending on the similarity of the two feature data within a 3*3 window. The one directional correspondence can be optimized with <a href=''>Patch-Match algorithm.</a></p>
+			<p>To obtain a correspondence with completeness and coherence, the algorithm utilized <a href='https://ieeexplore.ieee.org/document/4587842'>Bidirectional Similarity (BDS) voting</a> to resolve the contradiction between the two correspondences. BDS identifies a cost function combining bidirectional influence and updates the correspondence iteratively to minimize the cost function.</p>
+			<p>Once the correspondence from FS to FR is obtained, the algorithm uses it to define the guidance image G according to the color of the reference image and its corresponding feature map FG.</p>
+			<img src="results/nnf.png" alt = "Nearest-Neighbor Field Computation" class = "center">
+			<figcaption class = "caption">Nearest-Neighbor Field Computation at loop L</figcaption>
+			<li>Local Color Transfer</li>
+			<p>Now we obtain a guidance image in the NNF search step at level L, we perform a local color transfer on the modified source file S^L to better match the guidance image at this level. The guidance image now contains blurred structure and content that simulates S^L (as a result of reconstruction based on the NNF computations), but its style and color come from the reference images. We want an in-place correspondence between S^L and G, so we downscale S^L so that it has the same resolution as G before we do the transfer. Since mathematically the transfer is linear for every individual color pixel, it can be represented as a matrix of linear coefficients. The optimal transfer matrix that changes S^L to better match G is estimated by optimizing an objective function which penalizes dissimilarity between S^L and G, dissimilarity of local pixels (local constraint), and dissimilarity of non-local pixels that are of same color in S^L(non-local constraint). Our original attempt is to use conjugate gradient method to do this optimization, but it works poorly. We will discuss this in the sections below. We upscale S^L to the size of the original S, so it can be used in the next level as input. </p>
+			<p>[PS: Notice that, the performance of local color transfer step depends heavily on the semantic conformity of S^L and guidance image G. Here we present an experiment result that indicates bad use of this method.]</p>
+			<img src="results/localct.png" alt = "local color transfer" class = "center">
+			<figcaption class = "caption">Local Color Transfer at loop L</figcaption>
+		</ul>
+		<p>Due to implementation difficulty, we didn't fully realize the original algorithm. We will show the modifications we made to it in the next section.</p>
+	</div>
+
+	<div id = "Implmentation & Modifications">
+		<h2>Implmentation & Modifications</h2>
+		<p>We tried to implement the full algorithm using Matlab. However, due to the difficulty of the original algorithm and the limitation of our equipment, we simplified it to reduce the running time and get some results. This algorithm could be better implemented on other platforms using multithreading or run with GPU support.</p>
+		<ul class = "implementation-list">
+			<li>Nearest-Neighbor Field Computation</li>
+			<p>We used the pre-trained vgg19 provided by Matlab to obtain the feature maps. Then for each position in one normalized feature map, we slide over all possible patches on the other normalized feature map and find the one with the smallest squared norm difference. </p>
+			<p><b>Challenge1:</b> One challenge here is, for large feature maps, it takes lots of time to test through all possible matches, especially when the feature maps are in 3D tensor format. We then reduced our input size to the minimum scale for vgg19 and do NNF computation on it.</p>
+			<p><b>Challenge2:</b> Another problem we met is implementing the BDS voting on the two feature maps. The description in the paper by He et al. simply referred to the algorithm without explicitly giving the implementation details. However, the BDS voting algorithm in its original paper is utilized to summarize information of photos and thus achieves the convergence of BDS voting by reducing the size of the target image gradually. To transfer the BDS voting algorithm into our progressive style transfer algorithm, we may need more exploration of the two algorithms. Unfortunately, we didn't make it for this project. Thus, we eliminate this step in our testing. This may lead to a bad correspondence and guidance image lacking improvement for completeness and coherence. The incomplete implementation for BDS voting can be found on our Github page.</p>
+			<p>Given the one directional correspondence, we then create the guidance image based on the reference image color correspondingly at each pixel. We feed this G into vgg19 and extract reluL_1 for the feature maps of G, which will be utilized as one parameter for the Local Color Transfer part.</p>
+			<li>Local Color Transfer</li>
+			<p>The solution to the objective function to optimize the transfer matrix is not close formed. An alternative is to start with an initial guess and then performs conjugate gradient iterations. However, due to the high dimensionality of the target matrix(4D) and lack of support from Matlab to compute high dimensional matrix and model conjugate gradient, it is too challenging for us to stick to the method in the paper. The implementation by He et al is a C++ combined with CUDA implementation. To generate results within a desirable time, we modify the implementation of local color transfer by waiving the global color constraint which brings in the majority of the computational workloads and computing the coefficients inspired by method of expectations. We use local means and SD’s of both images to measure the expected coefficients of the transfer. The effect of this modification is not as good as the one in the original method, but we can get a sense of what this difference result from for improvements or better modification.</p>
+		</ul>
+	</div>
+	
+	<div id = "Results">
+		<h2>Results</h2>
+		<p>Given the multiple modifications we made to the original algorithm, we are not able to get meaningful results through the whole process. We then show some partial results for Nearest-Neighbor Field Computation and Local Color Transfer separately. For Local Color Transfer, we generate our own guidance image for testing.</p>
+		<ul class = "result">
+			<li>Nearest-Neighbor Field Computation</li>
+			<p>Here we show the output of guidance images of L=5, 4, 3 without the local color transfer step. As we can see, the guidance image obtained with one directional correspondence doesn't work well for finding the proper color match in the reference image. This result can be a counterexample showing the importance of the bidirectional mapping in the algorithm of He et al.</p>
+			<img src="results/Gexample.png" alt = "guidance images" class = "center">
+			<figcaption class = "caption">From left to right: source image, reference image, L=5 guidance image(relu5_1), L=4 guidance image(relu4_1), L=3 guidance image(relu3_1)</figcaption>
+			<li>Local Color Transfer</li>
+			<p></p>
+		</ul>
+	</div>
+
+	<div id = "Exploration">
+		<h2>Some Explorations</h2>
+		<p>Our first idea about this project is style transfer, which not only alter the color of the image but also distort its content strucutures. We notice that style transfer may works better for adding the artistic effect of some artworks onto a photo while our current topic color transfer provides decent results for transfering the lightning and colorization of objects of one photo to another. Out of curiosity, we make a style transfer on the images in Background section using <a href = 'https://www.mathworks.com/help/images/neural-style-transfer-using-deep-learning.html'>Neural Style Transfer</a> with Matlab. Here is the result:</p>
+		<img src="results/example3.png" alt = "color transfer example" class = "center">
+		<figcaption class = "caption">Left: source image, Middle: reference image, Right: output image</figcaption>
+		<p>The results shows even given two photos, style transfer may render the color and content and make the combined version looks like an artwork. There are some methods to achieve style transfer between two photos while remaining its <a href ='https://arxiv.org/abs/1703.07511'>photorealism</a>.</p>
+	</div>
+	<div id="reference">
+		<h3>References</h3>
+		<ul class="reference-list">
+			<li>He, M., Liao, J., Chen, D., Yuan, L., & Sander, P. V. (2019). Progressive Color Transfer With Dense Semantic Correspondences. ACM Trans. Graph, 38(2). doi:https://doi.org/10.1145/3292482</li>
+			<li>Reinhard, E., Adhikhmin, M., Gooch, B., & Shirley, P. (2001). Color transfer between images. IEEE Computer Graphics and Applications, 21,(5), 34-41. doi: 10.1109/38.946629.</li>
+			<li>Simakov, D., Caspi, Y., Shechtman, E., & Irani, M. (2008). Summarizing visual data using bidirectional similarity. 2008 IEEE Conference on Computer Vision and Pattern Recognition, Anchorage, AK, 1-8. doi: 10.1109/CVPR.2008.4587842.</li>
+		</ul><br><br>
+	</div>
+
+</section>
+</body>
+</html>
