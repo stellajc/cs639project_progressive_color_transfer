@@ -37,7 +37,7 @@
 		<br>
 		<ul class = "implementation-list">
 			<li>Major Pipeline</li>
-			<p>This algorithm consists of five loops from coarse to detailed color correspondences. The loop number L is labeled from 5 to 1. In each loop, the algorithm takes the reference image R and an intermediate image S^L+1 (L<5) from the previous loop. For the initial input, the intermediate image S will be replaced by the source image. The two images will be processed in the Nearest-Neighbor Field Computation part which outputs a guidance image G together with a feature layer for G. The algorithm will then do Local Color Transfer given the guidance image and the reference image and produce an intermediate output S^L which will feed into the next loop.</p>
+			<p>This algorithm consists of five loops from coarse to detailed color correspondences. The loop number L is labeled from 5 to 1. In each loop, the algorithm takes the reference image R and an intermediate image S^L+1 (L<5) from the previous loop. For the initial input, the intermediate image S will be replaced by the source image. The two images will be processed in the Nearest-Neighbor Field Computation part, which outputs a guidance image G together with a feature layer for G. The algorithm will then do Local Color Transfer given the guidance image and the reference image, and produce an intermediate output S^L which will feed into the next loop.</p>
 			<img src="pipeline.png" alt = "pipeline display" class = "center">
 			<figcaption class = "caption">Pipeline of Progressive Color Transfer</figcaption>
 			<li>Nearest-Neighbor Field Computation</li>
