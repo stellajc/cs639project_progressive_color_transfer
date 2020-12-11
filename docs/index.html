@@ -18,11 +18,11 @@
 		<h2>Background</h2>
 		<p>Color transfer is a profoundly explored topic in the computer vision field. It alters the colors in a content image corresponding to the color style in some reference images. Using color transfer, we are able to change the time setting of images, such as from day to night and from summer to winter, as it mimics different illumination and scene materials.</p>
 		<p>There are various methods to realize color transfer, including global color transfer methods, local color transfer methods, and learning-based algorithms. Here is one example we made using <a href='https://ieeexplore.ieee.org/document/946629'>global statistical analysis</a> to transfer the color style of source images: </p>
-		<img class='three' src="example.png" alt = "color transfer example" class = "center">
+		<img src="example.png" alt = "color transfer example" class = "center">
 		<figcaption class = "caption">Left: source image, Middle: reference image, Right: output image</figcaption>
 		<p>This example transforms the color of the source image in a spatially invariant method, which means it cannot achieve a precise correspondence between the two inputs considering the content structures.</p>
 		<p>Out of this consideration, we find the algorithm <a href ='https://arxiv.org/abs/1710.00756#:~:text=Title%3AProgressive%20Color%20Transfer%20with%20Dense%20Semantic%20Correspondences.%20Progressive,transfer%20that%20leverages%20semantically-meaningful%20dense%20correspondence%20between%20images.'>progressive color transfer with dense semantic correspondences</a>, which is published by He, M. et al. in 2017, a decent option to implement color transfer based on semantic similarities. Based on this algorithm, we implemented our simplified version of it using Matlab. One example result using this method is shown as below:</p>
-		<img class='three' src="example2.png" alt = "color transfer example2" class = "center">
+		<img src="example2.png" alt = "color transfer example2" class = "center">
 		<figcaption class = "caption">Left: source image, Middle: reference image, Right: output image</figcaption>
 	</div>
 
@@ -82,7 +82,7 @@
 			<p></p>
 			<img src="ctexample1.png" alt = "guidance images" class = "center">
 			<figcaption class = "caption">Left: source image, Middle: guidance image, Right: output image</figcaption>
-			<img class='three' src="ctexample2.png" alt = "guidance images" class = "center">
+			<img src="ctexample2.png" alt = "guidance images" class = "center">
 			<figcaption class = "caption">Left: source image, Middle: guidance image, Right: output image</figcaption>
 		</ul>
 	</div>
@@ -90,7 +90,7 @@
 	<div id = "Exploration">
 		<h2>Some Explorations</h2>
 		<p>Our first idea about this project is style transfer, which not only alter the color of the image but also distort its content strucutures. We notice that style transfer may works better for adding the artistic effect of some artworks onto a photo while our current topic color transfer provides decent results for transfering the lightning and colorization of objects of one photo to another. Out of curiosity, we make a style transfer on the images in Background section using <a href = 'https://www.mathworks.com/help/images/neural-style-transfer-using-deep-learning.html'>Neural Style Transfer</a> with Matlab. Here is the result:</p>
-		<img class='three' src="example3.png" alt = "color transfer example" class = "center">
+		<img src="example3.png" alt = "color transfer example" class = "center">
 		<figcaption class = "caption">Left: source image, Middle: reference image, Right: output image</figcaption>
 		<p>The results shows even given two photos, style transfer may render the color and content and make the combined version looks like an artwork. There are some methods to achieve style transfer between two photos while remaining its <a href ='https://arxiv.org/abs/1703.07511'>photorealism</a>.</p>
 	</div>
