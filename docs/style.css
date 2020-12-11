@@ -107,13 +107,13 @@ section {
     overflow-x: auto;
     margin: 50px auto;
     padding-left: 30px;
-/*     height: 400px; */
+    max-height: 400px;
     position: relative;
     left: 13%;
     background-size: cover;
 }
 .three img{
-    width: 1200px;
+    width: 600px;
 }
 
 .combine-result-list li {
